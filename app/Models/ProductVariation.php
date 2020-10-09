@@ -19,6 +19,10 @@ class ProductVariation extends Model
         return new Money($value);
     }
 
+    public function minStock($amount){
+        return min($this->stockCount(),$amount);
+    }
+
     public function priceVaries(){
         return $this->price->amount() !== $this->product->price->amount();
     }

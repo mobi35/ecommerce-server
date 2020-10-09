@@ -3,22 +3,25 @@
 namespace Tests\Unit\Models\Products;
 
 use App\Cart\Money;
-use Tests\TestCase;
-use App\Models\Stock;
-use App\Models\Product;
 use App\Models\Category;
+use App\Models\Product;
 use App\Models\ProductVariation;
+use App\Models\Stock;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class ProductTest extends TestCase
 {
-
-    public function test_it_uses_the_slugs_for_the_route()
+    public function test_it_uses_the_slug_for_the_route_key_name()
     {
-       $product = new Product();
-       $this->assertEquals($product->getRouteKeyName(), 'slug');
+        $product = new Product();
+
+        $this->assertEquals($product->getRouteKeyName(), 'slug');
     }
 
-    public function test_it_has_many_cat(){
+    public function test_it_has_many_categories()
+    {
         $product = factory(Product::class)->create();
 
         $product->categories()->save(
@@ -26,36 +29,37 @@ class ProductTest extends TestCase
         );
 
         $this->assertInstanceOf(Category::class, $product->categories->first());
-
     }
 
-    public function test_has_variation(){
+    public function test_it_has_many_variations()
+    {
         $product = factory(Product::class)->create();
 
         $product->variations()->save(
-            $variation = factory(ProductVariation::class)->create()
+            factory(ProductVariation::class)->create()
         );
 
         $this->assertInstanceOf(ProductVariation::class, $product->variations->first());
-
     }
 
-    public function test_it_returns_money_instance(){
+    public function test_it_returns_a_money_instance_for_the_price()
+    {
         $product = factory(Product::class)->create();
 
-        $this->assertInstanceOf(Money::class,$product->price);
+        $this->assertInstanceOf(Money::class, $product->price);
     }
 
-    public function test_returns_formatted_rpice(){
+    public function test_it_returns_a_formatted_price()
+    {
         $product = factory(Product::class)->create([
             'price' => 1000
         ]);
 
-        $this->assertEquals($product->formattedPrice,'$10.00');
+        $this->assertEquals($product->formattedPrice, '£10.00');
     }
 
-    public function test_checkIfItsInStock(){
-
+    public function test_it_can_check_if_its_in_stock()
+    {
         $product = factory(Product::class)->create();
 
         $product->variations()->save(
@@ -67,11 +71,10 @@ class ProductTest extends TestCase
         );
 
         $this->assertTrue($product->inStock());
-
     }
 
-    public function test_can_getTheStockCount(){
-
+    public function test_it_can_get_the_stock_count()
+    {
         $product = factory(Product::class)->create();
 
         $product->variations()->save(
@@ -85,6 +88,5 @@ class ProductTest extends TestCase
         );
 
         $this->assertEquals($product->stockCount(), $quantity);
-
     }
 }

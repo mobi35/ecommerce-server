@@ -5,6 +5,7 @@ use App\Models\Category;
 
 Route::resources(['categories' => 'Categories\CategoryController']);
 Route::resources(['products' => 'Products\ProductController']);
+Route::resources(['addresses' => 'Addresses\AddressController']);
 
 Route::group(['prefix' => 'auth'], function () {
     Route::post('register','Auth\RegisterController@action');
