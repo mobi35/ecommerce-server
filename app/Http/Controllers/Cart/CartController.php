@@ -25,14 +25,14 @@ class CartController extends Controller
        $cart->sync();
        
         $request->user()->load(['cart.product','cart.product.variations.stock','cart.stock','cart.type']);
-        return (new CartResource($request->user()))->additional(['meta' => $this->meta($cart)]);
+        return (new CartResource($request->user()))->additional(['meta' => $this->meta($cart,$request)]);
     }
 
-    protected function meta (Cart $cart){
+    protected function meta (Cart $cart, Request $request){
         return [
             'empty' => $cart->isEmpty(),
             'subtotal' => $cart->subtotal()->formatted(),
-            'total' => $cart->total()->formatted(),
+            'total' => $cart->withShipping($request->shipping_method_id)->total()->formatted(),
             'changed' => $cart->hasChanged()
         ];
     }

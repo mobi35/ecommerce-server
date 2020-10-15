@@ -18,6 +18,6 @@ class CountryTest extends TestCase
             factory(ShippingMethod::class)->create()
         );
 
-        $this->assertInstanceOf(ShippingMethod::class, $country->shippingMethods->first());
+        $this->assertInstanceOf(ShippingMethod::class, $country->shippingMethods->first() );
     }
 }
