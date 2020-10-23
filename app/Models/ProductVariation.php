@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Cart\Money;
+use App\Models\Collections\ProductVariationCollection;
 use App\Models\Stock;
 use App\Models\Product;
 use App\Models\Traits\HasPrice;
@@ -52,5 +53,11 @@ class ProductVariation extends Model
             ProductVariation::class,'product_variation_stock_view'
         )->withPivot(['stock','in_stock']);
     }
-    
+
+    public function newCollection(array $models = [])
+    {
+        return new ProductVariationCollection($models);
+
+    }
+
 }

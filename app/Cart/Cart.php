@@ -6,15 +6,19 @@ use App\Models\ShippingMethod;
 use App\Models\User;
 
 class Cart{
-    
+
     protected $user;
 
     protected $changed = false;
 
     protected $shipping;
-    public function __construct(User $user)
+    public function __construct($user)
     {
         $this->user = $user;
+    }
+
+    public function products(){
+        return $this->user->cart;
     }
 
     public function withShipping($shippingId){
@@ -25,7 +29,7 @@ class Cart{
     public function add($products)
     {
 
-     
+
         $this->user->cart()->syncWithoutDetaching(
             $this->getStorePayload($products)
         );
@@ -34,7 +38,7 @@ class Cart{
 
     public function update($productId, $quantity)
     {
-     
+
    $this->user->cart()->updateExistingPivot(
          $productId, [
              'quantity' => $quantity
@@ -69,7 +73,7 @@ class Cart{
 
     public function isEmpty(){
 
-        return $this->user->cart->sum('pivot.quantity') == 0;
+        return $this->user->cart->sum('pivot.quantity') <= 0;
     }
 
     protected function getStorePayload($products)

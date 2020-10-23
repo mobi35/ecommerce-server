@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Cart\Money;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +16,9 @@ class Order extends Model
     protected $fillable = [
         'status',
         'address_id',
-        'shipping_method_id'
+        'shipping_method_id',
+        'payment_method_id',
+        'subtotal'
     ];
 
     public static function boot(){
@@ -26,17 +29,31 @@ class Order extends Model
         });
     }
 
+    public function getSubtotalAttribute($subtotal){
+        return new Money($subtotal);
+    }
+
+    public function total(){
+        return $this->subtotal->add($this->shippingMethod->price);
+    }
+
     public function user(){
     return $this->belongsTo(User::class);
     }
 
     public function address(){
         return $this->belongsTo(Address::class);
-        
+
     }
 
     public function shippingMethod(){
-        return $this->belongs(ShippingMethod::class);
+        return $this->belongsTo(ShippingMethod::class);
+    }
+
+    public function products(){
+        return $this->belongsToMany(ProductVariation::class,'product_variation_order')
+        ->withPivot(['quantity'])
+        ->withTimestamps();
     }
 
 }

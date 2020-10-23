@@ -9,13 +9,13 @@ Route::resources(['addresses' => 'Addresses\AddressController']);
 Route::resources(['countries' => 'Countries\CountryController']);
 Route::get('addresses/{address}/shipping','Addresses\AddressShippingController@action');
 Route::resources(['orders' => 'Orders\OrderController']);
-
+Route::resources(['payment-methods' => 'PaymentMethods\PaymentMethodController']);
 Route::group(['prefix' => 'auth'], function () {
     Route::post('register','Auth\RegisterController@action');
     Route::post('login','Auth\LoginController@action');
     Route::get('me','Auth\MeController@action');
 
-   
+
 
 });
 

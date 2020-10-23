@@ -21,6 +21,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \Fruitcake\Cors\HandleCors::class,
         \App\Http\Middleware\ProfileJsonResponse::class,
+
     ];
 
     /**
@@ -63,6 +64,8 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'cart.sync' => \App\Http\Middleware\Cart\Sync::class,
+        'cart.isnotempty' => \App\Http\Middleware\Cart\ResponseIfEmpty::class,
     ];
 
     /**

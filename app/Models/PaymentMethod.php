@@ -4,31 +4,21 @@ namespace App\Models;
 
 use App\Models\Traits\CanBeDefault;
 use Illuminate\Database\Eloquent\Model;
-use PDO;
 
-class Address extends Model
+class PaymentMethod extends Model
 {
 
     use CanBeDefault;
-
     protected $fillable = [
-        'name',
-        'address_1',
-        'city',
-        'postal_code',
-        'country_id',
+        'card_type',
+        'last_four',
+        'provider_id',
         'default'
     ];
-
 
 
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function country()
-    {
-        return $this->hasOne(Country::class, 'id', 'country_id');
     }
 }
