@@ -2,32 +2,32 @@
 
 namespace App\Listeners\Order;
 
-use App\Cart\Cart;
-use App\Events\Order\OrderCreated;
+use App\Events\Order\OrderPaid;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class EmptyCart
+class CreateTransaction
 {
-    protected $cart;
     /**
      * Create the event listener.
      *
      * @return void
      */
-    public function __construct(Cart $cart)
+    public function __construct()
     {
-        $this->cart = $cart;
+        //
     }
 
     /**
      * Handle the event.
      *
-     * @param  OrderCreated  $event
+     * @param  OrderPaid  $event
      * @return void
      */
-    public function handle()
+    public function handle(OrderPaid $event)
     {
-        $this->cart->empty();
+        $event->order->transactions()->create([
+            'total' => $event->order->total()->amount()
+        ]);
     }
 }

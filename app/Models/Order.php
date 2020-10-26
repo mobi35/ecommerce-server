@@ -10,7 +10,7 @@ class Order extends Model
 {
     const PENDING = 'pending';
     const PROCESSING = 'processing';
-    const PAYMENT_FIELD = 'payment_failed';
+    const PAYMENT_FAILED = 'payment_failed';
     const COMPLETED = 'completed';
 
     protected $fillable = [
@@ -50,10 +50,19 @@ class Order extends Model
         return $this->belongsTo(ShippingMethod::class);
     }
 
+    public function paymentMethod(){
+        return $this->belongsTo(PaymentMethod::class);
+    }
+
+
     public function products(){
         return $this->belongsToMany(ProductVariation::class,'product_variation_order')
         ->withPivot(['quantity'])
         ->withTimestamps();
+    }
+
+    public function transactions(){
+        return $this->hasMany(Transaction::class);
     }
 
 }

@@ -8,7 +8,7 @@ class ProductVariationCollection extends Collection {
 
     public function forSyncing(){
 
-        $this->keyBy('id')->map(function ($product){
+      return  $this->keyBy('id')->map(function ($product){
             return [
                 'quantity' => $product->pivot->quantity
             ];

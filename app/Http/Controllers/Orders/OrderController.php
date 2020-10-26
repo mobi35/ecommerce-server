@@ -26,16 +26,21 @@ class OrderController extends Controller
         ->with(['products','products.stock','products.type','products.product','products.product.variations','products.product.variations.stock','address','shippingMethod'])
         ->latest()
         ->paginate(10);
+
         return OrderResource::collection($orders);
+
+
     }
 
     public function store(OrderStoreRequest $request, Cart $cart){
+
 
 
        $order = $this->createOrder($request, $cart);
 
        $order->products()->sync($cart->products()->forSyncing());
 
+      // $order->load(['products']);
 
         event(new OrderCreated($order));
 

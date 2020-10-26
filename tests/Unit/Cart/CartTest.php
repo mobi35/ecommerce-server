@@ -183,12 +183,13 @@ class CartTest extends TestCase
 
         $user->cart()->attach([
             $product->id => [
-                'quantity' => 2
+                'quantity' => 0
             ],
             $anotherProduct->id => [
-                'quantity' => 0
+                'quantity' => 2
             ]
         ]);
+
 
         $cart->sync();
 
