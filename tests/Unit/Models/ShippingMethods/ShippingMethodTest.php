@@ -35,6 +35,6 @@ class ShippingMethodTest extends TestCase
             'price' => 0
         ]);
 
-        $this->assertEquals($shipping->formattedPrice, '£0.00');
+        $this->assertEquals($shipping->formattedPrice, '₱0.00');
     }
 }

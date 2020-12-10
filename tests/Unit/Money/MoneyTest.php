@@ -21,7 +21,7 @@ class MoneyTest extends TestCase
     {
         $money = new Money(1000);
 
-        $this->assertEquals($money->formatted(), '£10.00');
+        $this->assertEquals($money->formatted(), '₱10.00');
     }
 
     public function test_it_can_add_up()

@@ -47,7 +47,7 @@ class CartIndexTest extends TestCase
 
         $response = $this->jsonAs($user, 'GET', 'api/cart')
             ->assertJsonFragment([
-                'subtotal' => '£0.00'
+                'subtotal' => '₱0.00'
             ]);
     }
 
@@ -57,7 +57,7 @@ class CartIndexTest extends TestCase
 
         $response = $this->jsonAs($user, 'GET', 'api/cart')
             ->assertJsonFragment([
-                'total' => '£0.00'
+                'total' => '₱0.00'
             ]);
     }
 
@@ -87,7 +87,7 @@ class CartIndexTest extends TestCase
 
         $response = $this->jsonAs($user, 'GET', "api/cart?shipping_method_id={$shipping->id}")
             ->assertJsonFragment([
-                'total' => '£10.00'
+                'total' => '₱10.00'
             ]);
     }
 }

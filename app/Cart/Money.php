@@ -11,7 +11,7 @@ use Money\Formatter\IntlMoneyFormatter;
 class Money{
 
 public function __construct($value){
-    $this->money = new BaseMoney($value, new Currency('GBP'));
+    $this->money = new BaseMoney($value, new Currency('PHP'));
 }
 
 public function amount(){
@@ -19,7 +19,7 @@ public function amount(){
 }
 
 public function formatted(){
-    $numberFormatter = new NumberFormatter('en_US', NumberFormatter::CURRENCY);
+    $numberFormatter = new NumberFormatter('en-PH', NumberFormatter::CURRENCY);
     $currencies = new ISOCurrencies();
 
     $formatter = new IntlMoneyFormatter(

@@ -55,7 +55,7 @@ class ProductTest extends TestCase
             'price' => 1000
         ]);
 
-        $this->assertEquals($product->formattedPrice, '£10.00');
+        $this->assertEquals($product->formattedPrice, '₱10.00');
     }
 
     public function test_it_can_check_if_its_in_stock()

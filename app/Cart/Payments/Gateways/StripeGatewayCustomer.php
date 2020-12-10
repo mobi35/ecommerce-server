@@ -24,7 +24,7 @@ class StripeGatewayCustomer implements GatewayCustomer{
     {
         try{
         StripeCharge::create([
-            'currency' => 'GBP',
+            'currency' => 'PHP',
             'amount' => $amount,
             'customer' => $this->customer->id,
             'source' => $card->provider_id

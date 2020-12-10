@@ -40,7 +40,7 @@ class ProductVariationTest extends TestCase
             'price' => 1000
         ]);
 
-        $this->assertEquals($variation->formattedPrice, '£10.00');
+        $this->assertEquals($variation->formattedPrice, '₱10.00');
     }
 
     public function test_it_returns_the_product_price_if_price_is_null()
