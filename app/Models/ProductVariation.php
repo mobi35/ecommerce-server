@@ -60,4 +60,16 @@ class ProductVariation extends Model
 
     }
 
+    public function images(){
+        return $this->hasMany(ImagesForProduct::class,'product_variation_id','id');
+    }
+
+    public function showImages($id){
+        $obj = ProductVariation::find($id);
+        return $obj->images()->get();
+     
+    }
+
+
+
 }

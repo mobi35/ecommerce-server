@@ -15,7 +15,13 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use CanBeScoped, HasPrice;
-
+    protected $fillable = [
+        'name',
+        'price',
+        'slug',
+        'description'
+       
+    ];
     public function getRouteKeyName(){
         return 'slug';
     }
@@ -32,17 +38,23 @@ class Product extends Model
         });
     }
 
-  
+
+ 
 
 
     public function categories(){
         return $this->belongsToMany(Category::class);
     }
 
+    public function productImage(){
+        return $this->hasOne(ProductVariation::class);
+    }
+
     public function variations(){
         return $this->hasMany(ProductVariation::class)->orderBy('order','asc');
     }
 
+   
 
 
 }

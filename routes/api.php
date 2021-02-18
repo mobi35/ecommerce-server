@@ -18,9 +18,14 @@ Route::group(['prefix' => 'auth'], function () {
 
 });
 
-
+Route::get('addresses/{address}/shipping','Addresses\AddressShippingController@action');
 Route::resource('cart','Cart\CartController',[
     'parameters' => [
         'cart' => 'productVariation'
     ]
 ]);
+
+
+Route::get('showvar','Products\ProductController@showVar');
+
+Route::post('checkslug','Products\ProductController@checkSlug');
