@@ -14,8 +14,8 @@ class AddProductvarIdToProduct extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->integer('image_id')->unsigned()->change();
-            $table->foreign('image_id')->references('id')->on('images_for_products');
+        //    $table->integer('image_id')->unsigned()->change();
+        //    $table->foreign('image_id')->references('id')->on('images_for_products');
         });
     }
 

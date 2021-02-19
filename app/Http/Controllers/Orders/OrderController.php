@@ -4,11 +4,15 @@ namespace App\Http\Controllers\Orders;
 
 use App\Cart\Cart;
 use App\Events\Order\OrderCreated;
+use App\Events\Order\OrderPaid;
+use App\Events\Order\OrderPaymentFailed;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Orders\OrderStoreRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\ProductVariation;
 use Illuminate\Http\Request;
+use App\Models\Order;
+use Illuminate\Support\Facades\Storage;
 
 class OrderController extends Controller
 {
@@ -32,6 +36,22 @@ class OrderController extends Controller
 
     }
 
+
+    public function adminshow(){
+
+    $orders = Order::with(['products','address'])->get();
+       
+
+       // $orders = $request->orders()
+      //  ->with(['products','products.stock','products.type','products.product','products.product.variations','products.product.variations.stock','address','shippingMethod'])
+      //  ->latest()
+       // ->paginate(10);
+
+        return OrderResource::collection($orders);
+
+
+    }
+
     public function store(OrderStoreRequest $request, Cart $cart){
 
 
@@ -49,6 +69,7 @@ class OrderController extends Controller
     }
 
     protected function createOrder(Request $request, Cart $cart){
+      
        return $request->user()->orders()->create(
            array_merge( $request->only(['address_id','shipping_method_id','payment_method_id'])
             ,
@@ -58,4 +79,59 @@ class OrderController extends Controller
             ));
 
     }
+
+    public function pay(Request $request){
+        $order = Order::find( $request->id);
+        event(new OrderPaid($order));
+
+        $order->status = "completed";
+        $order->save();
+        return 'success';
+    }
+
+    public function cancel($id){
+        $order = Order::find($id);
+        event(new OrderPaymentFailed($order));
+
+        $order->status = " payment_failed";
+        $order->save();
+       
+        return 'success';
+    }
+
+    public function uploadPayment(Request $request){
+        $request->validate([
+            'image' => 'required|file|image',
+        ]);
+        $this->StoreImage($request->file('image'), $request->order_id);
+        
+        return 'Success';
+    }
+
+
+    public function StoreImage($image,$id){
+       $timestampName = microtime(true) . '.jpg';
+
+       $image->storeAs('photos',  $timestampName);
+       $this->UpdateOrder( $timestampName, $id);
+        return $image;
+    }
+
+    public function UpdateOrder($image,$id){
+       $order =  Order::find($id);
+     
+       if($order->image_name != ""){
+       // Storage::disk('storage')->delete($order->image_name);
+            if($order->image_name == ""){
+            $order->image_name = $image;
+        }
+       }else {
+           $order->image_name = $image;
+       }
+       $order->save();
+
+    }
+
+ 
+    
 }

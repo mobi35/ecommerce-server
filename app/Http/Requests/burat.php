@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\PaymentMethods;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PaymentMethodStoreRequest extends FormRequest
+class burat extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class PaymentMethodStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -23,6 +23,8 @@ class PaymentMethodStoreRequest extends FormRequest
      */
     public function rules()
     {
-       return [];
+        return [
+            //
+        ];
     }
 }

@@ -28,9 +28,9 @@ class AppServiceProvider extends ServiceProvider
             return new Cart($app->auth->user());
         });
 
-        $this->app->singleton(Gateway::class, function() {
-            return new StripeGateway();
-        });
+        //$this->app->singleton(Gateway::class, function() {
+          //  return new StripeGateway();
+      //  });
     }
 
     /**
@@ -40,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Stripe::setApiKey(config('services.stripe.secret'));
+       // Stripe::setApiKey(config('services.stripe.secret'));
 
 
     }

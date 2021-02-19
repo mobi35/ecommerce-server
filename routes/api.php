@@ -25,7 +25,12 @@ Route::resource('cart','Cart\CartController',[
     ]
 ]);
 
+Route::post('orders/uploadPayment' , 'Orders\OrderController@uploadPayment');
+Route::post('orders/pay' , 'Orders\OrderController@pay');
+Route::post('orders/cancel' , 'Orders\OrderController@cancel');
 
+
+Route::get('adminshow' , 'Orders\OrderController@adminshow');
 Route::get('showvar','Products\ProductController@showVar');
 
 Route::post('checkslug','Products\ProductController@checkSlug');

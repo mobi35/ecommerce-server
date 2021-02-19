@@ -19,7 +19,7 @@ class CreatePaymentMethodsTable extends Migration
             $table->string('card_type')->nullable();
             $table->string('last_four')->nullable();
             $table->boolean('default')->default(true);
-            $table->string('provider_id')->unique();
+            $table->string('provider_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

@@ -3,7 +3,6 @@
 namespace App\Listeners\Order;
 
 use App\Cart\Cart;
-use App\Cart\Payments\Gateway;
 use App\Events\Order\OrderCreated;
 use App\Events\Order\OrderPaid;
 use App\Events\Order\OrderPaymentFailed;
@@ -19,9 +18,9 @@ class ProcessPayment implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Gateway $gateway)
+    public function __construct()
     {
-        $this->gateway = $gateway;
+      
     }
 
     /**
@@ -36,11 +35,6 @@ class ProcessPayment implements ShouldQueue
        $order = $event->order;
 
     try{
-       $this->gateway->withUser($order->user)
-        ->getCustomer()
-        ->charge(
-            $order->paymentMethod, $order->total()->amount()
-        );
         event(new OrderPaid($order));
     }catch(PaymentFailedException $e){
         event(new OrderPaymentFailed($order));

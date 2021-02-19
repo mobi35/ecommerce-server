@@ -18,7 +18,8 @@ class Order extends Model
         'address_id',
         'shipping_method_id',
         'payment_method_id',
-        'subtotal'
+        'subtotal',
+        'payslip_name'
     ];
 
     public static function boot(){
@@ -65,4 +66,5 @@ class Order extends Model
         return $this->hasMany(Transaction::class);
     }
 
+  
 }

@@ -22,6 +22,9 @@ class OrderPaid
     public function __construct(Order $order)
     {
         $this->order = $order;
+
+        $this->order->status = "completed";
+        $this->order->save();
     }
 
 
