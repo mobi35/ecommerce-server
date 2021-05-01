@@ -6,12 +6,23 @@ use App\Cart\Money;
 use App\Models\Collections\ProductVariationCollection;
 use App\Models\Stock;
 use App\Models\Product;
+
 use App\Models\Traits\HasPrice;
 use App\Models\ProductVariationType;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductVariation extends Model
 {
+
+    protected $fillable = [
+        'name',
+        'price',
+        'slug',
+        'product_variation_type_id',
+        'product_id'
+       
+    ];
+
     use HasPrice;
     public function getPriceAttribute($value){
         if($value == null){
@@ -37,15 +48,21 @@ class ProductVariation extends Model
         return $this->stock->sum('pivot.stock');
     }
     public function type(){
+       
         return $this->hasOne(ProductVariationType::class,'id','product_variation_type_id');
+ 
     }
 
     public function  product(){
+      
         return $this->belongsTo(Product::class);
+   
     }
 
     public function stocks(){
+    
         return $this->hasMany(Stock::class);
+    
     }
 
     public function stock(){
@@ -57,7 +74,6 @@ class ProductVariation extends Model
     public function newCollection(array $models = [])
     {
         return new ProductVariationCollection($models);
-
     }
 
     public function images(){
@@ -68,6 +84,11 @@ class ProductVariation extends Model
         $obj = ProductVariation::find($id);
         return $obj->images()->get();
      
+    }
+
+    public function getVariationType($id){
+        $obj = ProductVariationType::find($id);
+        return $obj->name;
     }
 
 

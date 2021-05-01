@@ -14,7 +14,7 @@ class AddPayslipInOrder extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->string('image_name');
+            $table->string('image_name')->nullable();
         });
     }
 

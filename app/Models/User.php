@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Address;
 use App\Models\PaymentMethod;
+use App\Models\UserSocial;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -19,7 +20,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','gateway_customer_id',
+        'name', 'email', 'password','gateway_customer_id','role'
     ];
 
     /**
@@ -85,6 +86,15 @@ class User extends Authenticatable implements JWTSubject
     public function paymentMethods()
     {
         return $this->hasMany(PaymentMethod::class);
+    }
+
+    public function social(){
+
+        return $this->hasMany(UserSocial::class);
+    }
+
+    public function hasSocialLinked($service){
+        return (bool) $this->social->where('service', $service)->count();
     }
 }
 

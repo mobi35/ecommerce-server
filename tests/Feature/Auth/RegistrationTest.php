@@ -47,10 +47,21 @@ class RegistrationTest extends TestCase
 
     public function test_it_registers_a_user()
     {
-        $this->json('POST', 'api/auth/register', [
+
+        $user = factory(User::class)->create([
+            'password' => 'cats',
+            'role' => 'admin'
+        ]);
+        
+        
+        $token = \JWTAuth::fromUser($user);
+       // dd($toks);
+
+        $this->json('POST', 'api/auth/register?token='.$token , [
             'name' => $name = 'Alex',
             'email' => $email = 'alex@codecourse.com',
-            'password' => 'secret'
+            'password' => 'secret',
+            'role' => 'burat'
         ]);
 
         $this->assertDatabaseHas('users', [
@@ -59,12 +70,22 @@ class RegistrationTest extends TestCase
         ]);
     }
 
+
     public function test_it_returns_a_user_on_registration()
     {
-        $this->json('POST', 'api/auth/register', [
+        $user = factory(User::class)->create([
+            'password' => 'cats',
+            'role' => 'admin'
+        ]);
+        
+        
+        $token = \JWTAuth::fromUser($user);
+
+        $this->json('POST', 'api/auth/register?token='.$token , [
             'name' => 'Alex',
             'email' => $email = 'alex@codecourse.com',
-            'password' => 'secret'
+            'password' => 'secret',
+            'role' => 'borakit'
         ])
             ->assertJsonFragment([
                 'email' => $email

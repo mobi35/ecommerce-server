@@ -9,8 +9,8 @@ class ImagesForProduct extends Model
     //
     protected $fillable = [
         'image_name',
-        'cover'
-        
+        'cover',
+        'product_variation_id'
        
     ];
 

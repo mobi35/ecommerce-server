@@ -55,7 +55,7 @@ class ProcessPaymentListenerTest extends TestCase
             return $event->order->id === $order->id;
         });
     }
-
+/*
     public function test_it_fires_the_order_failed_event()
     {
         Event::fake();
@@ -76,6 +76,8 @@ class ProcessPaymentListenerTest extends TestCase
             return $event->order->id === $order->id;
         });
     }
+
+*/
 
     protected function createEvent()
     {

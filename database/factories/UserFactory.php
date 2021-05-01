@@ -19,5 +19,6 @@ $factory->define(App\Models\User::class, function (Faker $faker) {
         'email' => $faker->unique()->safeEmail,
         'password' => 'cats',
         'remember_token' => str_random(10),
+        'role' => $faker->cityPrefix
     ];
 });

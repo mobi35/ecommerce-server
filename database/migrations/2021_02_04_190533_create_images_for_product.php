@@ -13,9 +13,9 @@ class CreateImagesForProduct extends Migration
      */
     public function up()
     {
-        Schema::create('images_for_product', function (Blueprint $table) {
+        Schema::create('images_for_products', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string("image_name");
+            $table->string("image_name")->nullable();
             $table->boolean("cover");
             $table->integer('product_variation_id')->unsigned()->index();
             $table->timestamps();

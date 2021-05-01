@@ -9,7 +9,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication,DatabaseTransactions;
+    use CreatesApplication,RefreshDatabase;
 
     public function jsonAs(JWTSubject $user, $method, $endpoint, $data = [], $headers=[]){
         $token = auth()->tokenById($user->id);
