@@ -14,6 +14,7 @@ class LoginController extends Controller
     public function action(Request $request)
     {
 
+        
         if ($request->input('token')) {
             auth()->setToken($request->input('token'));
 

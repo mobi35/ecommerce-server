@@ -103,17 +103,37 @@ class OrderController extends Controller
         $request->validate([
             'image' => 'required|file|image',
         ]);
-        $this->StoreImage($request->file('image'), $request->order_id);
+
+        $imgName = time() . "." . $request->file('image')->extension();
+        $request->file('image')->move(public_path('receipt'), $imgName);
+        $order =  Order::find($request->order_id);
+     
+        if($order->image_name != ""){
+        // Storage::disk('storage')->delete($order->image_name);
+             if($order->image_name == ""){
+             $order->image_name = $imgName;
+         }
+        }else {
+            $order->image_name = $imgName;
+        }
+        $order->save();
+        return "";
+      //  $this->StoreImage($request->file('image'), $request->order_id);
         
-        return 'Success';
+        //return 'Success';
     }
 
 
     public function StoreImage($image,$id){
-       $timestampName = microtime(true) . '.jpg';
+        return "burat";
 
-       $image->storeAs('photos',  $timestampName);
-       $this->UpdateOrder( $timestampName, $id);
+    //   $timestampName = microtime(true) . '.jpg';
+       $imgName = time() . "." . $image->extension();
+       $image->move(public_path('receipt'), $imgName);
+
+      // $image->storeAs('photos',  $timestampName);
+       $this->UpdateOrder( $imgName, $id);
+
         return $image;
     }
 
