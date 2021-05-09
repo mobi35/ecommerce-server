@@ -14,7 +14,6 @@ class CountriesTableSeeder extends Seeder
     {
         $countries = [
 
-
             'Pasig' => 'PAS',
             'Manila' => 'MAN'
         ];
@@ -22,7 +21,7 @@ class CountriesTableSeeder extends Seeder
         collect($countries)->each(function ($code,$name) {
             Country::create([
                 'code' => $code,
-                'name' => $name 
+                'name' => $name
             ]);
         });
 

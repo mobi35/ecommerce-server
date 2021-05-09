@@ -13,7 +13,6 @@ class RegisterController extends Controller
     public function action (RegisterRequest $request){
 
 
-
         $credentials = $request->only('email', 'password','role');
 
 
