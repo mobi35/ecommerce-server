@@ -20,7 +20,7 @@ class ProductVariation extends Model
         'slug',
         'product_variation_type_id',
         'product_id'
-       
+
     ];
 
     use HasPrice;
@@ -48,21 +48,21 @@ class ProductVariation extends Model
         return $this->stock->sum('pivot.stock');
     }
     public function type(){
-       
+
         return $this->hasOne(ProductVariationType::class,'id','product_variation_type_id');
- 
+
     }
 
     public function  product(){
-      
+
         return $this->belongsTo(Product::class);
-   
+
     }
 
     public function stocks(){
-    
+
         return $this->hasMany(Stock::class);
-    
+
     }
 
     public function stock(){
@@ -83,7 +83,7 @@ class ProductVariation extends Model
     public function showImages($id){
         $obj = ProductVariation::find($id);
         return $obj->images()->get();
-     
+
     }
 
     public function getVariationType($id){

@@ -4,9 +4,10 @@ namespace App\Models;
 
 
 use App\Models\Category;
+use App\Models\CategoryProduct;
+
 use App\Models\Traits\HasPrice;
 use App\Models\ProductVariation;
-
 use App\Models\Traits\CanBeScoped;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,13 +21,20 @@ class Product extends Model
         'price',
         'slug',
         'description'
-       
+
     ];
     public function getRouteKeyName(){
         return 'slug';
     }
 
-    public function inStock(){ 
+    public function getCategory($id){
+        $product = $this::where('id',$id)->first();
+       $catPro = CategoryProduct::where('product_id',$product->id)->first();
+        $cat = Category::where('id',$catPro->category_id);
+        return $cat->slug;
+    }
+
+    public function inStock(){
         return $this->stockCount() > 0;
     }
 
@@ -39,7 +47,7 @@ class Product extends Model
     }
 
 
- 
+
 
 
     public function categories(){
@@ -54,7 +62,7 @@ class Product extends Model
         return $this->hasMany(ProductVariation::class)->orderBy('order','asc');
     }
 
-   
+
 
 
 }

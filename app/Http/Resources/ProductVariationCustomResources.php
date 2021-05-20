@@ -17,6 +17,8 @@ class ProductVariationCustomResources extends JsonResource
         return [
             'name' => $this->name,
             'price' => $this->price,
+            'formatted' => $this->price->formatted(),
+            'id' => $this->id,
             'file' => $this->file,
             'type' => $this->getVariationType($this->product_variation_type_id)
         ];

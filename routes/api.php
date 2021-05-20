@@ -3,7 +3,11 @@
 use App\Models\Category;
 
 
+
+Route::resources(['variations' => 'Products\ProductVariationController']);
+Route::resources(['variationtype' => 'Products\ProductVariationTypeController']);
 Route::resources(['categories' => 'Categories\CategoryController']);
+Route::resources(['images' => 'Products\ImageController']);
 Route::resources(['products' => 'Products\ProductController']);
 Route::resources(['addresses' => 'Addresses\AddressController']);
 Route::resources(['countries' => 'Countries\CountryController']);
@@ -29,15 +33,22 @@ Route::resource('cart','Cart\CartController',[
 Route::post('orders/uploadPayment' , 'Orders\OrderController@uploadPayment');
 Route::post('orders/pay' , 'Orders\OrderController@pay');
 Route::post('orders/cancel' , 'Orders\OrderController@cancel');
-
+Route::post('orders/prepare' , 'Orders\OrderController@prepare');
+Route::post('orders/shipped' , 'Orders\OrderController@shipped');
 
 Route::get('adminshow' , 'Orders\OrderController@adminshow');
 Route::get('showvar','Products\ProductController@showVar');
 
 Route::post('checkslug','Products\ProductController@checkSlug');
-
+Route::get('random','Products\ProductController@randomProducts');
 Route::get('showAll','Products\ProductController@showAllWithoutPage');
+Route::get('showAdmin','Products\ProductController@showAdminProducts');
 
+Route::put('best/{id}','Products\ProductController@makeBest');
+
+Route::post('sizeUpload','Products\ProductController@uploadSize');
+
+Route::post('deleteVariation','Products\ProductController@deleteVariation');
 Route::post('storeVariation','Products\ProductController@storeVariation');
 
 Route::get('getVariations','Products\ProductController@getVariations');

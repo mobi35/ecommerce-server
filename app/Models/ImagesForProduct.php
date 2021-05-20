@@ -11,7 +11,6 @@ class ImagesForProduct extends Model
         'image_name',
         'cover',
         'product_variation_id'
-       
     ];
 
 

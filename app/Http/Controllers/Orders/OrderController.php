@@ -33,14 +33,13 @@ class OrderController extends Controller
 
         return OrderResource::collection($orders);
 
-
     }
 
 
     public function adminshow(){
 
     $orders = Order::with(['products','address'])->get();
-       
+
 
        // $orders = $request->orders()
       //  ->with(['products','products.stock','products.type','products.product','products.product.variations','products.product.variations.stock','address','shippingMethod'])
@@ -69,7 +68,7 @@ class OrderController extends Controller
     }
 
     protected function createOrder(Request $request, Cart $cart){
-      
+
        return $request->user()->orders()->create(
            array_merge( $request->only(['address_id','shipping_method_id','payment_method_id'])
             ,
@@ -92,10 +91,22 @@ class OrderController extends Controller
     public function cancel($id){
         $order = Order::find($id);
         event(new OrderPaymentFailed($order));
-
         $order->status = " payment_failed";
         $order->save();
-       
+        return 'success';
+    }
+    public function prepare(Request $request){
+        $order = Order::find( $request->id);
+       // event(new OrderPaid($order));
+        $order->orderStatus = "prepare";
+        $order->save();
+        return 'success';
+    }
+    public function shipped(Request $request){
+        $order = Order::find( $request->id);
+     //   event(new OrderPaid($order));
+        $order->orderStatus = "shipped";
+        $order->save();
         return 'success';
     }
 
@@ -107,7 +118,7 @@ class OrderController extends Controller
         $imgName = time() . "." . $request->file('image')->extension();
         $request->file('image')->move(public_path('receipt'), $imgName);
         $order =  Order::find($request->order_id);
-     
+
         if($order->image_name != ""){
         // Storage::disk('storage')->delete($order->image_name);
              if($order->image_name == ""){
@@ -119,7 +130,7 @@ class OrderController extends Controller
         $order->save();
         return "";
       //  $this->StoreImage($request->file('image'), $request->order_id);
-        
+
         //return 'Success';
     }
 
@@ -139,7 +150,7 @@ class OrderController extends Controller
 
     public function UpdateOrder($image,$id){
        $order =  Order::find($id);
-     
+
        if($order->image_name != ""){
        // Storage::disk('storage')->delete($order->image_name);
             if($order->image_name == ""){
@@ -152,6 +163,6 @@ class OrderController extends Controller
 
     }
 
- 
-    
+
+
 }

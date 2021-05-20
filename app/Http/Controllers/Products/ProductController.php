@@ -1,24 +1,31 @@
 <?php
 
 namespace App\Http\Controllers\Products;
-use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
+use Illuminate\Http\Request;
+use App\Models\CategoryProduct;
 use App\Models\ImagesForProduct;
 use App\Models\ProductVariation;
-use App\Models\ProductVariationType;
-use App\Http\Requests\Products\ProductRequest;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ProductIndexResource;
+use App\Models\ProductVariationType;
+use App\Scoping\Scopes\CategoryScope;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductAddResource;
+use App\Http\Resources\ProductIndexResource;
+use App\Http\Requests\Products\ProductRequest;
+use App\Http\Resources\ProductAdminResource;
 use App\Http\Resources\ProductVariationCustomResources;
-use App\Scoping\Scopes\CategoryScope;
 
 
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('jwt.admin')->except(['index','show']);
+    }
+
     public function index(){
         $products = Product::with(['variations.stock'])->withScopes($this->scopes())->paginate(10);
 
@@ -34,66 +41,65 @@ class ProductController extends Controller
         );
     }
 
-    public function showVar(){
+    public function update(Request $request, $id){
+        $category  = CategoryProduct::where('product_id', $id)->update(['category_id' => $request->category]);
+        Product::find($id)->fill($request->only('name','price','description' ))->save();
+        return "updated";
+    }
 
+    public function showVar(){
+        $products = Product::with(['variations.stock'])->withScopes($this->scopes())->paginate(10);
+        return ProductResource::collection($products);
+    }
+    public function showAllWithoutPage(){
+        $products = Product::with(['variations.stock'])->withScopes($this->scopes())->paginate();
+        return ProductResource::collection($products);
+    }
+
+    public function showAdminProducts(){
+        $products = Product::with(['variations.stock'])->withScopes($this->scopes())->paginate();
+        return ProductAdminResource::collection($products);
+    }
+
+    public function bestProducts(){
         $products = Product::with(['variations.stock'])->withScopes($this->scopes())->paginate(10);
 
         return ProductResource::collection($products);
-
     }
 
-    public function showAllWithoutPage(){
+    public function makeBest($id){
 
-        $products = Product::with(['variations.stock'])->withScopes($this->scopes())->paginate();
-
-        return ProductResource::collection($products);
-
+        $products = Product::find($id);
+        $products->feature = !$products->feature;
+        $products->save();
+        return "updated feature to  " . $products->feature;
     }
 
-    public function storeVariation(Request $request){
-       //return $request->file;
-       //print_r($request);
+    public function uploadSize(Request $request){
+        $request->validate([
+            'image' => 'required|file|image',
+        ]);
+        $imgName = time() .  $request->file('image')->getClientOriginalName() . "." . $request->file('image')->extension();
+        $request->file('image')->move(public_path('sizeChart'), $imgName);
 
-      $image = $request->file('file');
-      $prod = Product::where('id',$request->product_id)->first();
+        $product =  Product::find($request->id);
 
-        $prod->variations()->save(
-            $variation = ProductVariation::create( $request->only('name','price','product_id','product_variation_type_id') )
-         );
-        $count = 0;
-         foreach($image as $val){
-            $imgName = time() . "." . $val->extension();
-            $val->move(public_path('uploads'), $imgName);
-
-            if($count == 0){
-            $variation->images()->save(
-
-                $image = ImagesForProduct::create(
-                    ['image_name' => $imgName ,
-                    'product_variation_id' => $variation->id ,
-                    'cover' => true]
-                )
-            );
-            $count++;
-        }else {
-            $variation->images()->save(
-
-                $image = ImagesForProduct::create(
-                    ['image_name' => $imgName ,
-                    'product_variation_id' => $variation->id ,
-                    'cover' => false]
-                )
-            );
-        }
+        if($product->sizeImage != ""){
+             if($product->sizeImage == ""){
+             $product->sizeImage = $imgName;
          }
+        }else {
+            $product->sizeImage = $imgName;
+        }
+        $product->save();
+        return "";
 
-         return $variation;
+    }
 
-
-
-
-
-
+    public function randomProducts()
+    {
+        $products = Product::with(['variations.stock'])->withScopes($this->scopes())->inRandomOrder()->limit(5)->get();;
+        return ProductResource::collection($products);
     }
 
     protected function scopes(){
@@ -102,20 +108,38 @@ class ProductController extends Controller
         ];
     }
 
+    public  function slugify($text, string $divider = '-')
+    {
+    $text = preg_replace('~[^\pL\d]+~u', $divider, $text);
+    $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+    $text = preg_replace('~[^-\w]+~', '', $text);
+    $text = trim($text, $divider);
+    $text = preg_replace('~-+~', $divider, $text);
+    $text = strtolower($text);
+
+    if (empty($text)) {
+        return 'n-a';
+    }
+
+    return $text;
+    }
+
     public function store(ProductRequest $request){
 
+        $category = Category::where('id',$request->category)->first();
+        $slug = $this->slugify($request->name);
 
-        $authUser = \JWTAuth::parseToken()->authenticate();
-
-        if($authUser->role != "admin"){
-            return "You are not an admin ";
+        $count = 0;
+        $newSlug = $slug;
+        while(Product::where('slug',$newSlug)->count() > 0){
+            $newSlug = $slug . '-' . $count;
+            $count++;
         }
 
-        $category = Category::where('slug',$request->category)->first();
-
+        //array_merge([ 'slug' => $slug],$request->only('name','price','description' ))
         if($category != null){
             $category->products()->save(
-                $product = Product::create($request->only('name','price','description','slug'))
+                $product = Product::create(array_merge([ 'slug' => $newSlug],$request->only('name','price','description' ))  )
             );
             return new ProductAddResource($product);
        }else {
@@ -123,6 +147,7 @@ class ProductController extends Controller
        }
       //  $product->sync();
     }
+
 
     public function checkSlug(ProductRequest $request){
 
@@ -133,11 +158,28 @@ class ProductController extends Controller
         return new ProductAddResource($test);
     }
 
+    public function deleteVariation(Request $request){
+        $productImage = ImagesForProduct::where('product_variation_id',$request->id)->delete();
+        $productVar = ProductVariation::where('id',$request->id)->delete();
+        return "deleted";
+    }
+
+    public function destroy($id){
+        $prod = Product::where('id',$id)->first();
+        $prodVar = ProductVariation::where('product_id',$id)->get();
+        if($prodVar->count() > 0){
+            foreach($prodVar as $var){
+                ImagesForProduct::where('product_variation_id',$var->id)->delete();
+                ProductVariation::where('id',$var->id)->delete();
+            }
+        }
+        CategoryProduct::where('product_id',$id)->delete();
+        Product::where('id',$id)->delete();
+     //   $product = Product::where('id',$request->id)->delete();
+        return "deleted";
+    }
     ///PRODUCT VARIATIONS
-
-
     public function getVariations(Request $request){
-
         $test = Product::where('slug',$request->slug)->first();
         $productVar = ProductVariation::where('product_id',$test->id)->get();
 

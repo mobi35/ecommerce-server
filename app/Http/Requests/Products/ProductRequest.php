@@ -24,7 +24,7 @@ class ProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'slug' => 'required',
+            'name' => 'required'
         ];
     }
 }

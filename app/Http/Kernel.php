@@ -66,7 +66,8 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'cart.sync' => \App\Http\Middleware\Cart\Sync::class,
         'cart.isnotempty' => \App\Http\Middleware\Cart\ResponseIfEmpty::class,
-        'social' => \App\Http\MiddleWare\SocialMiddleware::class
+        'social' => \App\Http\MiddleWare\SocialMiddleware::class,
+        'jwt.admin' => \App\Http\Middleware\AdminOnly::class,
      ];
 
     /**

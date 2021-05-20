@@ -21,6 +21,7 @@ class OrderResource extends JsonResource
             'subtotal' => $this->subtotal->formatted(),
             'total' => $this->total()->formatted(),
             'image_name' => $this->image_name,
+            'orderStatus' => $this->orderStatus,
             'products' => ProductVariationResource::collection(
                 $this->whenLoaded('products')
             ),
