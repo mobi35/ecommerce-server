@@ -4,6 +4,8 @@ use App\Models\Category;
 
 
 
+
+Route::resources(['stocks' => 'Stocks\StockController']);
 Route::resources(['variations' => 'Products\ProductVariationController']);
 Route::resources(['variationtype' => 'Products\ProductVariationTypeController']);
 Route::resources(['categories' => 'Categories\CategoryController']);
@@ -40,7 +42,7 @@ Route::get('adminshow' , 'Orders\OrderController@adminshow');
 Route::get('showvar','Products\ProductController@showVar');
 
 Route::post('checkslug','Products\ProductController@checkSlug');
-Route::get('random','Products\ProductController@randomProducts');
+Route::get('random/{slug}','Products\ProductController@randomProducts');
 Route::get('showAll','Products\ProductController@showAllWithoutPage');
 Route::get('showAdmin','Products\ProductController@showAdminProducts');
 
@@ -51,4 +53,4 @@ Route::post('sizeUpload','Products\ProductController@uploadSize');
 Route::post('deleteVariation','Products\ProductController@deleteVariation');
 Route::post('storeVariation','Products\ProductController@storeVariation');
 
-Route::get('getVariations','Products\ProductController@getVariations');
+Route::get('getVariations','Products\ProductVariationController@getVariations');

@@ -14,12 +14,13 @@ use App\Http\Controllers\Controller;
 use App\Models\ProductVariationType;
 use App\Http\Resources\ProductVariationResource;
 use App\Http\Resources\ProductVariationTypeResource;
+use App\Http\Resources\ProductVariationCustomResources;
 
 class ProductVariationController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('jwt.admin')->except(['index','show']);
+        $this->middleware('jwt.admin')->except(['index','show','getVariations']);
     }
     public function index(){
         $productVariation = ProductVariation::get();
@@ -45,6 +46,7 @@ class ProductVariationController extends Controller
 
     public function store(Request $request){
 
+       
 
        $image = $request->file('file');
        $prod = Product::where('id',$request->product_id)->first();
@@ -52,9 +54,10 @@ class ProductVariationController extends Controller
          $prod->variations()->save(
              $variation = ProductVariation::create( $request->only('name','price','product_id','product_variation_type_id') )
           );
+
          $count = 0;
           foreach($image as $val){
-             $imgName = time(). $val->getClientOriginalName() . "." . $val->extension();
+             $imgName = time(). $val->getClientOriginalName();
              $val->move(public_path('uploads'), $imgName);
              $variation->images()->save(
 
@@ -65,14 +68,24 @@ class ProductVariationController extends Controller
                  )
              );
              $count++;
-          }
+          } 
 
+          return $image;
           return new ProductVariationResource($variation);
      }
 
 
     public function destroy($id){
+        ImagesForProduct::where('product_variation_id',$id)->delete();
         ProductVariation::find($id)->delete();
         return "deleted";
     }
+
+    public function getVariations(Request $request){
+        $test = Product::where('slug',$request->slug)->first();
+        $productVar = ProductVariation::where('product_id',$test->id)->get();
+
+        return ProductVariationCustomResources::collection($productVar);
+    }
+
 }

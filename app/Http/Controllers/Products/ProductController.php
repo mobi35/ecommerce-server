@@ -23,7 +23,7 @@ class ProductController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('jwt.admin')->except(['index','show']);
+        $this->middleware('jwt.admin')->except(['index','show','randomProducts','showVar']);
     }
 
     public function index(){
@@ -68,10 +68,12 @@ class ProductController extends Controller
     }
 
     public function makeBest($id){
-
+        
         $products = Product::find($id);
+  
         $products->feature = !$products->feature;
         $products->save();
+
         return "updated feature to  " . $products->feature;
     }
 
@@ -96,9 +98,9 @@ class ProductController extends Controller
 
     }
 
-    public function randomProducts()
+    public function randomProducts($slug)
     {
-        $products = Product::with(['variations.stock'])->withScopes($this->scopes())->inRandomOrder()->limit(5)->get();;
+        $products = Product::with(['variations.stock'])->where('slug','!=',$slug)->withScopes($this->scopes())->inRandomOrder()->limit(5)->get();;
         return ProductResource::collection($products);
     }
 
@@ -139,7 +141,7 @@ class ProductController extends Controller
         //array_merge([ 'slug' => $slug],$request->only('name','price','description' ))
         if($category != null){
             $category->products()->save(
-                $product = Product::create(array_merge([ 'slug' => $newSlug],$request->only('name','price','description' ))  )
+                $product = Product::create(array_merge([ 'slug' => $newSlug, 'feature' => false],$request->only('name','price','description' ))  )
             );
             return new ProductAddResource($product);
        }else {
@@ -179,12 +181,7 @@ class ProductController extends Controller
         return "deleted";
     }
     ///PRODUCT VARIATIONS
-    public function getVariations(Request $request){
-        $test = Product::where('slug',$request->slug)->first();
-        $productVar = ProductVariation::where('product_id',$test->id)->get();
-
-        return ProductVariationCustomResources::collection($productVar);
-    }
+  
 
 
 }
