@@ -13,6 +13,7 @@ Route::resources(['images' => 'Products\ImageController']);
 Route::resources(['products' => 'Products\ProductController']);
 Route::resources(['addresses' => 'Addresses\AddressController']);
 Route::resources(['countries' => 'Countries\CountryController']);
+Route::resources(['shipping' => 'Shipping\ShippingMethodController']);
 Route::get('addresses/{address}/shipping','Addresses\AddressShippingController@action');
 Route::resources(['orders' => 'Orders\OrderController']);
 Route::resources(['payment-methods' => 'PaymentMethods\PaymentMethodController']);
@@ -53,4 +54,21 @@ Route::post('sizeUpload','Products\ProductController@uploadSize');
 Route::post('deleteVariation','Products\ProductController@deleteVariation');
 Route::post('storeVariation','Products\ProductController@storeVariation');
 
+//ADD SHIPPING IN COUNTRY
+Route::post('addShippingInCountry','Countries\CountryController@addShippingInCountry');
+Route::post('deleteCountryShipping','Shipping\ShippingMethodController@deleteCountryShipping');
+
+
+
+Route::get('getCountryShipping/{id}','Shipping\ShippingMethodController@getCountryShipping');
+
+
+
+
+
 Route::get('getVariations','Products\ProductVariationController@getVariations');
+
+
+///DASHBOARDED
+
+Route::get('users','Users\UserController@users');

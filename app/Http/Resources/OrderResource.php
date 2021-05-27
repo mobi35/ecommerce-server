@@ -22,8 +22,10 @@ class OrderResource extends JsonResource
             'total' => $this->total()->formatted(),
             'image_name' => $this->image_name,
             'orderStatus' => $this->orderStatus,
+      
             'products' => ProductVariationResource::collection(
                 $this->whenLoaded('products')
+              
             ),
             'address' => new AddressResource(
                 $this->whenLoaded('address')

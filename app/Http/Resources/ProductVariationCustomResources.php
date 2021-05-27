@@ -20,6 +20,7 @@ class ProductVariationCustomResources extends JsonResource
             'formatted' => $this->price->formatted(),
             'id' => $this->id,
             'file' => $this->file,
+            'stock_count' =>(int) $this->stockCount(),
             'type' => $this->getVariationType($this->product_variation_type_id)
         ];
     }

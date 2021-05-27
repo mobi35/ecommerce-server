@@ -38,9 +38,7 @@ class OrderController extends Controller
 
     public function adminshow(){
 
-    $orders = Order::with(['products','address'])->get();
-
-
+        $orders = Order::with(['products','products.stock','products.type','products.product','products.product.variations','products.product.variations.stock','address','shippingMethod'])->get();
        // $orders = $request->orders()
       //  ->with(['products','products.stock','products.type','products.product','products.product.variations','products.product.variations.stock','address','shippingMethod'])
       //  ->latest()
@@ -88,10 +86,10 @@ class OrderController extends Controller
         return 'success';
     }
 
-    public function cancel($id){
-        $order = Order::find($id);
+    public function cancel(Request $request){
+        $order = Order::find($request->id);
         event(new OrderPaymentFailed($order));
-        $order->status = " payment_failed";
+        $order->status = "payment_failed";
         $order->save();
         return 'success';
     }
