@@ -11,6 +11,7 @@ use App\Http\Resources\ShippingMethodsResource;
 
 class ShippingMethodController extends Controller
 {
+    
     //
     public function index(){
        return ShippingMethodsResource::collection(ShippingMethod::get());

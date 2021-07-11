@@ -15,7 +15,7 @@ class SocialLoginController extends Controller
     public function __construct(JWTAuth $auth)
     {
         $this->auth = $auth;
-        $this->middleware(['social', 'web']);
+     //   $this->middleware('social');
     }
 
     public function redirect($service)

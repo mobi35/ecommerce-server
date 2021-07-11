@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Products;
 use Exception;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\ProductVariationOrder;
+use App\Models\Stock;
 use Illuminate\Http\Request;
 use App\Models\ImagesForProduct;
 use App\Models\ProductVariation;
@@ -20,7 +22,7 @@ class ProductVariationController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('jwt.admin')->except(['index','show','getVariations']);
+       // $this->middleware('jwt.admin')->except(['index','show','getVariations']);
     }
     public function index(){
         $productVariation = ProductVariation::get();
@@ -45,37 +47,45 @@ class ProductVariationController extends Controller
     }
 
     public function store(Request $request){
-
        
 
-       $image = $request->file('file');
-       $prod = Product::where('id',$request->product_id)->first();
+   
+    try{
+     $prod = Product::where('id',$request->product_id)->first();
+     $prod->variations()->save(
+         $variation = ProductVariation::create( $request->only('name','price','product_id','product_variation_type_id') )
+      );
+    }catch(Exception $e){
 
-         $prod->variations()->save(
-             $variation = ProductVariation::create( $request->only('name','price','product_id','product_variation_type_id') )
-          );
+    }
 
-         $count = 0;
-          foreach($image as $val){
-             $imgName = time(). $val->getClientOriginalName();
-             $val->move(public_path('uploads'), $imgName);
-             $variation->images()->save(
+          if($request->hasFile('file')) {
+            $image = $request->file('file');
+            foreach($image as $val){
+                $imgName = time(). $val->getClientOriginalName();
+                $val->move(public_path('uploads'), $imgName);
+                $variation->images()->save(
+   
+                    $image = ImagesForProduct::create(
+                        ['image_name' => $imgName ,
+                        'product_variation_id' => $variation->id ,
+                        'cover' => false]
+                    )
+                );
+             } 
+        }
+        return "uploaded";
 
-                 $image = ImagesForProduct::create(
-                     ['image_name' => $imgName ,
-                     'product_variation_id' => $variation->id ,
-                     'cover' => false]
-                 )
-             );
-             $count++;
-          } 
 
-          return $image;
+        //   return $image;
+       
           return new ProductVariationResource($variation);
      }
 
 
     public function destroy($id){
+        Stock::where('product_variation_id',$id)->delete();
+        ProductVariationOrder::where('product_variation_id',$id)->delete();
         ImagesForProduct::where('product_variation_id',$id)->delete();
         ProductVariation::find($id)->delete();
         return "deleted";

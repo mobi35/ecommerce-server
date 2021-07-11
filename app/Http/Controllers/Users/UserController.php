@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     //
+    
+    public function __construct()
+    {
+        $this->middleware('jwt.admin')->except(['index','show']);
+    }
 
     public function users(){
         return PrivateUserResource::collection(User::get());

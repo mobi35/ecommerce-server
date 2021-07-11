@@ -16,7 +16,7 @@ use App\Http\Resources\ProductIndexResource;
 use App\Http\Requests\Products\ProductRequest;
 use App\Http\Resources\ProductAdminResource;
 use App\Http\Resources\ProductVariationCustomResources;
-
+use App\Models\Stock;
 
 
 class ProductController extends Controller
@@ -169,12 +169,7 @@ class ProductController extends Controller
     public function destroy($id){
         $prod = Product::where('id',$id)->first();
         $prodVar = ProductVariation::where('product_id',$id)->get();
-        if($prodVar->count() > 0){
-            foreach($prodVar as $var){
-                ImagesForProduct::where('product_variation_id',$var->id)->delete();
-                ProductVariation::where('id',$var->id)->delete();
-            }
-        }
+      
         CategoryProduct::where('product_id',$id)->delete();
         Product::where('id',$id)->delete();
      //   $product = Product::where('id',$request->id)->delete();

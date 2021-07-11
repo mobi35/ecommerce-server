@@ -10,6 +10,12 @@ use App\Http\Resources\PrivateUserResource;
 use Illuminate\Support\Facades\Auth;
 class RegisterController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('jwt.admin')->except(['index','show']);
+    }
+
     public function action (RegisterRequest $request){
 
 
